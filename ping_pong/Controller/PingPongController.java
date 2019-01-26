@@ -11,6 +11,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+
 public class PingPongController {
     @FXML
     Circle ball;
@@ -21,19 +22,36 @@ public class PingPongController {
     @FXML
     Rectangle leftPaddle;
 
-    int PaddleCoordinateIncrement = 3;
+    int paddleCoordinateIncrement = 3;
+    int ballCoordinateIncrement = 2;
     double centerFieldY;
+    double allowedPaddleTop;
+    double allowedPaddleBottom;
 
     DoubleProperty currentLeftPaddleY = new SimpleDoubleProperty();
     DoubleProperty currentRightPaddleY = new SimpleDoubleProperty();
+
+    DoubleProperty currentBallX = new SimpleDoubleProperty();
+    DoubleProperty currentBallY = new SimpleDoubleProperty();
 
     Timeline timeline;
 
     public void initialize (){
         currentLeftPaddleY.set(leftPaddle.getLayoutY());
         leftPaddle.layoutYProperty().bind(currentLeftPaddleY);
+
         currentRightPaddleY.set(rightPaddle.getLayoutY());
         rightPaddle.layoutYProperty().bind(currentRightPaddleY);
+
+        allowedPaddleTop = paddleCoordinateIncrement;
+        allowedPaddleBottom = field.getHeight() - leftPaddle.getHeight() - paddleCoordinateIncrement;
+
+        centerFieldY = field.getHeight() / 2;
+
+        currentBallX.set(ball.getCenterX());
+        ball.centerXProperty().bind(currentBallX);
+        currentBallY.set(ball.getCenterY());
+        ball.centerYProperty().bind(currentBallY);
     }
 
     public void keyPressedHandler(KeyEvent keyEvent) {
@@ -42,26 +60,61 @@ public class PingPongController {
         switch (keyCode) {
             case UP:
                 leftPaddleUp();
+                break;
             case DOWN:
                 leftPaddleDown();
+                break;
             case W:
                 rightPaddleUp();
+                break;
             case S:
                 rightPaddleDown();
+                break;
+            case P:
+                moveBall();
+                break;
         }
     }
     public void leftPaddleUp(){
-        currentLeftPaddleY.set(currentLeftPaddleY.get() - PaddleCoordinateIncrement);
+        if (currentLeftPaddleY.get() > allowedPaddleTop) {
+            currentLeftPaddleY.set(currentLeftPaddleY.get() - paddleCoordinateIncrement);
+        }
     }
-    public void leftPaddleDown(){
-        currentLeftPaddleY.set(currentLeftPaddleY.get() + PaddleCoordinateIncrement);
+    public void leftPaddleDown() {
+        if (currentLeftPaddleY.get() < allowedPaddleBottom) {
+            currentLeftPaddleY.set(currentLeftPaddleY.get() + paddleCoordinateIncrement);
+        }
     }
-    public void rightPaddleUp(){
-        currentRightPaddleY.set(currentRightPaddleY.get() - PaddleCoordinateIncrement);
+    public void rightPaddleUp() {
+        if (currentRightPaddleY.get() > allowedPaddleTop) {
+            currentRightPaddleY.set(currentRightPaddleY.get() - paddleCoordinateIncrement);
+        }
     }
-    public void rightPaddleDown(){
-        currentRightPaddleY.set(currentRightPaddleY.get() + PaddleCoordinateIncrement);
+    public void rightPaddleDown() {
+        if (currentRightPaddleY.get() < allowedPaddleBottom) {
+            currentRightPaddleY.set(currentRightPaddleY.get() + paddleCoordinateIncrement);
+        }
+    }
+    public void moveBall(){
+        KeyFrame keyFrame = new KeyFrame(new Duration(10), event ->{
+            currentBallY.set(currentBallY.get() + ballCoordinateIncrement);
+            ballBounceTopWall();
+            ballBounceTheBottomWall();
+        });
+        timeline = new Timeline(keyFrame);
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
     }
 
+    public void ballBounceTopWall(){
+        if ((currentBallY.get() - ball.getRadius()) < 0){
+            currentBallY.set(currentBallY.get() + ballCoordinateIncrement);
+        }
+    }
+    public void ballBounceTheBottomWall(){
+        if ((currentBallY.get() + ball.getRadius()) > field.getHeight() / 2){
+            currentBallY.set(currentBallY.get() - ballCoordinateIncrement);
+        }
+    }
 }
 
