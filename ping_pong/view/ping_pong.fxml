@@ -3,11 +3,22 @@
 <?import javafx.scene.Group?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-
-<Group xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ping_pong.Controller.PingPongController" onKeyPressed="#keyPressedHandler" focusTraversable="true">
+<Group focusTraversable="true" onKeyPressed="#keyPressedHandler" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ping_pong.Controller.PingPongController">
    <children>
       <Rectangle fx:id="field" arcHeight="5.0" arcWidth="5.0" fill="#064606" height="450.0" stroke="BLACK" strokeType="INSIDE" width="700.0" />
+      <Text fx:id="rightScore" layoutX="370.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Text>
+      <Text fx:id="leftScore" layoutX="310.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Text>
       <Rectangle fx:id="rightPaddle" arcHeight="5.0" arcWidth="5.0" fill="RED" height="100.0" layoutX="676.0" layoutY="175.0" stroke="BLACK" strokeType="INSIDE" width="20.0" />
       <Rectangle fx:id="leftPaddle" arcHeight="5.0" arcWidth="5.0" fill="#0005ff" height="100.0" layoutX="4.0" layoutY="175.0" stroke="BLACK" strokeType="INSIDE" width="20.0" />
       <Circle fx:id="ball" fill="WHITE" layoutX="350.0" layoutY="218.0" radius="13.0" stroke="BLACK" strokeType="INSIDE" />
