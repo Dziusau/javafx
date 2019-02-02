@@ -23,8 +23,10 @@ public class PingPongController {
     Rectangle leftPaddle;
 
     int paddleCoordinateIncrement = 3;
-    int ballCoordinateIncrement = 2;
+    int ballCoordinateIncrementY = 2;
+    int ballCoordinateIncrementX = 2;
     double centerFieldY;
+    double centerFieldX;
     double allowedPaddleTop;
     double allowedPaddleBottom;
 
@@ -47,6 +49,7 @@ public class PingPongController {
         allowedPaddleBottom = field.getHeight() - leftPaddle.getHeight() - paddleCoordinateIncrement;
 
         centerFieldY = field.getHeight() / 2;
+        centerFieldX = field.getWidth() / 2;
 
         currentBallX.set(ball.getCenterX());
         ball.centerXProperty().bind(currentBallX);
@@ -97,23 +100,25 @@ public class PingPongController {
     }
     public void moveBall(){
         KeyFrame keyFrame = new KeyFrame(new Duration(10), event ->{
-            currentBallY.set(currentBallY.get() + ballCoordinateIncrement);
-            ballBounceTopWall();
-            ballBounceTheBottomWall();
+            checkTopBottomWalls ();
+            currentBallY.set(currentBallY.get() + ballCoordinateIncrementY);
+            currentBallX.set(currentBallX.get() + ballCoordinateIncrementX);
+            checkRightLeftWalls();
         });
         timeline = new Timeline(keyFrame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
     }
 
-    public void ballBounceTopWall(){
-        if ((currentBallY.get() - ball.getRadius()) < 0){
-            currentBallY.set(currentBallY.get() + ballCoordinateIncrement);
+    public void checkTopBottomWalls(){
+        if ((currentBallY.get() + ball.getRadius()) > centerFieldY || (currentBallY.get() - ball.getRadius()) < centerFieldY * (-1)){
+            ballCoordinateIncrementY = ballCoordinateIncrementY * (-1);
         }
     }
-    public void ballBounceTheBottomWall(){
-        if ((currentBallY.get() + ball.getRadius()) > field.getHeight() / 2){
-            currentBallY.set(currentBallY.get() - ballCoordinateIncrement);
+
+    public void checkRightLeftWalls(){
+        if ((currentBallX.get() + ball.getRadius()) > centerFieldX || (currentBallX.get() - ball.getRadius()) < centerFieldX * (-1)){
+            ballCoordinateIncrementX = ballCoordinateIncrementX * (-1);
         }
     }
 }
